@@ -8,7 +8,7 @@ export function FastForward() {
   return (
     <TransportButton
       onClick={() => {
-        send({ type: "ff" });
+        send({ type: "fastFwd" });
       }}
     >
       <FastFwdIcon />

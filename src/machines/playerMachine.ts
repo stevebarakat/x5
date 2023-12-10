@@ -12,7 +12,7 @@ const audioContext = getAudioContext();
 const initialContext = {
   song: {
     url: "/nelly.mp3",
-    start: 4,
+    start: 3,
     end: 244,
   },
   volume: 20,
@@ -65,10 +65,10 @@ export const playerMachine = createMachine(
           type: "rewind",
         },
       },
-      ff: {
+      fastFwd: {
         target: "#player",
         actions: {
-          type: "fastForward",
+          type: "fastFwd",
         },
       },
       setVolume: {
@@ -80,7 +80,7 @@ export const playerMachine = createMachine(
     },
     types: {
       events: {} as
-        | { type: "ff" }
+        | { type: "fastFwd" }
         | { type: "play" }
         | { type: "pause" }
         | { type: "reset" }
@@ -91,11 +91,13 @@ export const playerMachine = createMachine(
   },
   {
     actions: {
-      play: () => {
+      play: ({ context }) => {
         if (audioContext.state === "suspended") {
           initializeAudio();
+          t.seconds = context.song.start;
           t.start();
         } else {
+          t.seconds = context.song.start;
           t.start();
         }
       },
@@ -104,8 +106,17 @@ export const playerMachine = createMachine(
         t.stop();
         t.seconds = 0;
       },
-      rewind: ({ context, event }) => {},
-      fastForward: ({ context, event }) => {},
+      fastFwd: ({ context }) => {
+        t.seconds =
+          t.seconds > 10 - context.song.end
+            ? t.seconds + 10
+            : (t.seconds = context.song.end);
+      },
+      rewind: ({ context }) =>
+        (t.seconds =
+          t.seconds > 10 + context.song.start
+            ? t.seconds - 10
+            : context.song.start),
       setVolume: assign(({ event }) => {
         if (event.type !== "setVolume") throw new Error();
         return {
