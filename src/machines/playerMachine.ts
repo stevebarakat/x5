@@ -1,11 +1,11 @@
 import { createActorContext } from "@xstate/react";
 import { assign, createMachine } from "xstate";
-import { produce } from "immer";
+import { dbToPercent, log } from "@/utils";
 import {
   start as initializeAudio,
   getContext as getAudioContext,
   Transport as t,
-  type Channel,
+  Destination,
 } from "tone";
 
 const audioContext = getAudioContext();
@@ -14,9 +14,9 @@ const initialContext = {
   song: {
     url: "/nelly.mp3",
     start: 3,
-    end: 244,
+    end: 15,
   },
-  volume: 20,
+  volume: -32,
 };
 
 export const playerMachine = createMachine(
@@ -36,6 +36,7 @@ export const playerMachine = createMachine(
         on: {
           play: {
             target: "playing",
+            guard: "canPlay",
           },
         },
       },
@@ -61,19 +62,16 @@ export const playerMachine = createMachine(
         },
       },
       rewind: {
-        target: "#player",
         actions: {
           type: "rewind",
         },
       },
       fastFwd: {
-        target: "#player",
         actions: {
           type: "fastFwd",
         },
       },
       setVolume: {
-        target: "#player",
         actions: {
           type: "setVolume",
         },
@@ -87,7 +85,7 @@ export const playerMachine = createMachine(
         | { type: "reset" }
         | { type: "loaded" }
         | { type: "rewind" }
-        | { type: "setVolume"; volume: number; channel: Channel | null },
+        | { type: "setVolume"; volume: number },
     },
   },
   {
@@ -118,17 +116,24 @@ export const playerMachine = createMachine(
           t.seconds > 10 + context.song.start
             ? t.seconds - 10
             : context.song.start),
-      setVolume: assign(({ context, event }) => {
+      setVolume: assign(({ event }) => {
         if (event.type !== "setVolume") throw new Error();
-        console.log("context", context);
-        console.log("event", event);
+        const scaled = dbToPercent(log(event.volume));
+        Destination.volume.value = scaled;
         return {
           volume: event.volume,
         };
       }),
     },
     actors: {},
-    guards: {},
+    guards: {
+      canPlay: ({ context }) => {
+        console.log(t.seconds < context.song.end);
+        console.log("context.song.end", context.song.end);
+        console.log("t.seconds", t.seconds);
+        return t.seconds < context.song.end;
+      },
+    },
     delays: {},
   }
 );

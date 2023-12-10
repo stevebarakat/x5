@@ -1,17 +1,15 @@
 import { useEffect, useRef } from "react";
-import { Channel, Player, Transport as t } from "tone";
+import { Channel, Player } from "tone";
 
 type Song = {
   url: string;
-  start?: number;
-  stop?: number;
+  start: number;
+  end: number;
 };
 
 function useSong(song: Song) {
   const channel = useRef<Channel | null>(null);
   const player = useRef<Player | null>(null);
-
-  console.log("song", song);
 
   useEffect(() => {
     channel.current = new Channel({ volume: 20 });

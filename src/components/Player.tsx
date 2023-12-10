@@ -3,11 +3,10 @@ import useSong from "../hooks/useSong";
 import { nelly } from "../assets/nelly";
 import Loader from "@/components/Loader";
 import Play from "@/components/Transport";
-console.log("nelly", nelly);
 export default function Player() {
   const { volume } = PlayerMachineContext.useSelector((state) => state.context);
   const { send } = PlayerMachineContext.useActorRef();
-  const { channel } = useSong(nelly);
+  useSong(nelly);
   const isLoading = PlayerMachineContext.useSelector((state) =>
     state.matches("loading")
   );
@@ -18,16 +17,19 @@ export default function Player() {
       <div className="flex-column">
         <label htmlFor="number-input">Input:</label>
         <input
+          min={-100}
+          max={0}
+          step={0.1}
           id="number-input"
-          type="number"
+          type="range"
           value={volume}
-          onChange={(e) =>
+          onChange={(e) => {
+            const volume = parseFloat(e.currentTarget.value);
             send({
               type: "setVolume",
-              volume: parseInt(e.currentTarget.value, 10),
-              channel,
-            })
-          }
+              volume,
+            });
+          }}
         />
         <Play />
       </div>
