@@ -1,8 +1,5 @@
-import { createActorContext } from "@xstate/react";
-import Player from "./Player";
-import { playerMachine } from "./playerMachine";
-
-export const PlayerMachineContext = createActorContext(playerMachine);
+import Player from "./components/Player";
+import { PlayerMachineContext } from "./machines/playerMachine";
 
 export const App = () => {
   return (

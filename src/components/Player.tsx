@@ -1,7 +1,8 @@
-import { PlayerMachineContext } from "./App";
-import useSong from "./useSong";
-import { nelly } from "./assets/nelly";
+import { PlayerMachineContext } from "@/machines/playerMachine";
+import useSong from "../useSong";
+import { nelly } from "../assets/nelly";
 import Loader from "@/components/Loader";
+import Play from "@/components/Transport";
 
 export default function Player() {
   const { volume } = PlayerMachineContext.useSelector((state) => state.context);
@@ -27,15 +28,7 @@ export default function Player() {
             })
           }
         />
-        <button
-          onClick={() =>
-            send({
-              type: "play",
-            })
-          }
-        >
-          play
-        </button>
+        <Play />
       </div>
     );
   }

@@ -1,4 +1,4 @@
-import { PlayerMachineContext } from "@/App";
+import { PlayerMachineContext } from "@/machines/playerMachine";
 import { loaded } from "tone";
 import "./styles.css";
 

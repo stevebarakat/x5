@@ -1,5 +1,6 @@
+import { createActorContext } from "@xstate/react";
 import { assign, createMachine } from "xstate";
-import { nelly } from "./assets/nelly";
+import { produce } from "immer";
 import {
   start as initializeAudio,
   getContext as getAudioContext,
@@ -11,6 +12,8 @@ const audioContext = getAudioContext();
 const initialContext = {
   song: {
     url: "/nelly.mp3",
+    start: 4,
+    end: 244,
   },
   volume: 20,
 };
@@ -40,7 +43,7 @@ export const playerMachine = createMachine(
           type: "play",
         },
         on: {
-          PAUSE: {
+          pause: {
             target: "stopped",
             actions: {
               type: "pause",
@@ -50,19 +53,19 @@ export const playerMachine = createMachine(
       },
     },
     on: {
-      RESET: {
+      reset: {
         target: ".stopped",
         actions: {
           type: "reset",
         },
       },
-      REWIND: {
+      rewind: {
         target: "#player",
         actions: {
           type: "rewind",
         },
       },
-      FF: {
+      ff: {
         target: "#player",
         actions: {
           type: "fastForward",
@@ -77,12 +80,12 @@ export const playerMachine = createMachine(
     },
     types: {
       events: {} as
-        | { type: "FF" }
+        | { type: "ff" }
         | { type: "play" }
-        | { type: "PAUSE" }
-        | { type: "RESET" }
+        | { type: "pause" }
+        | { type: "reset" }
         | { type: "loaded" }
-        | { type: "REWIND" }
+        | { type: "rewind" }
         | { type: "setVolume"; volume: number },
     },
   },
@@ -96,14 +99,23 @@ export const playerMachine = createMachine(
           t.start();
         }
       },
-      pause: ({ context, event }) => {},
-      reset: ({ context, event }) => {},
+      pause: () => t.pause(),
+      reset: () => {
+        t.stop();
+        t.seconds = 0;
+      },
       rewind: ({ context, event }) => {},
       fastForward: ({ context, event }) => {},
-      setVolume: ({ context, event }) => {},
+      setVolume: assign(({ event }) => {
+        if (event.type !== "setVolume") throw new Error();
+        return {
+          volume: event.volume,
+        };
+      }),
     },
     actors: {},
     guards: {},
     delays: {},
   }
 );
+export const PlayerMachineContext = createActorContext(playerMachine);
