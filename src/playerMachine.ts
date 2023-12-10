@@ -1,9 +1,24 @@
 import { assign, createMachine } from "xstate";
 import { nelly } from "./assets/nelly";
+import {
+  start as initializeAudio,
+  getContext as getAudioContext,
+  Transport as t,
+} from "tone";
 
-export const machine = createMachine(
+const audioContext = getAudioContext();
+
+const initialContext = {
+  song: {
+    url: "/nelly.mp3",
+  },
+  volume: 20,
+};
+
+export const playerMachine = createMachine(
   {
-    id: "mixer",
+    id: "player",
+    context: initialContext,
     initial: "loading",
     states: {
       loading: {
@@ -15,7 +30,7 @@ export const machine = createMachine(
       },
       stopped: {
         on: {
-          PLAY: {
+          play: {
             target: "playing",
           },
         },
@@ -42,19 +57,19 @@ export const machine = createMachine(
         },
       },
       REWIND: {
-        target: "#mixer",
+        target: "#player",
         actions: {
           type: "rewind",
         },
       },
       FF: {
-        target: "#mixer",
+        target: "#player",
         actions: {
           type: "fastForward",
         },
       },
-      SET_VOLUME: {
-        target: "#mixer",
+      setVolume: {
+        target: "#player",
         actions: {
           type: "setVolume",
         },
@@ -63,17 +78,24 @@ export const machine = createMachine(
     types: {
       events: {} as
         | { type: "FF" }
-        | { type: "PLAY" }
+        | { type: "play" }
         | { type: "PAUSE" }
         | { type: "RESET" }
         | { type: "loaded" }
         | { type: "REWIND" }
-        | { type: "SET_VOLUME" },
+        | { type: "setVolume"; volume: number },
     },
   },
   {
     actions: {
-      play: ({ context, event }) => {},
+      play: () => {
+        if (audioContext.state === "suspended") {
+          initializeAudio();
+          t.start();
+        } else {
+          t.start();
+        }
+      },
       pause: ({ context, event }) => {},
       reset: ({ context, event }) => {},
       rewind: ({ context, event }) => {},

@@ -1,14 +1,14 @@
 import { createActorContext } from "@xstate/react";
-import { Details } from "./Details";
-import { someMachine } from "./some-machine";
+import Player from "./Player";
+import { playerMachine } from "./playerMachine";
 
-export const SomeMachineContext = createActorContext(someMachine);
+export const PlayerMachineContext = createActorContext(playerMachine);
 
 export const App = () => {
   return (
-    <SomeMachineContext.Provider>
-      <Details />
-    </SomeMachineContext.Provider>
+    <PlayerMachineContext.Provider>
+      <Player />
+    </PlayerMachineContext.Provider>
   );
 };
 
