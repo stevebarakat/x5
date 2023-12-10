@@ -5,6 +5,7 @@ import {
   start as initializeAudio,
   getContext as getAudioContext,
   Transport as t,
+  type Channel,
 } from "tone";
 
 const audioContext = getAudioContext();
@@ -86,7 +87,7 @@ export const playerMachine = createMachine(
         | { type: "reset" }
         | { type: "loaded" }
         | { type: "rewind" }
-        | { type: "setVolume"; volume: number },
+        | { type: "setVolume"; volume: number; channel: Channel | null },
     },
   },
   {
@@ -117,8 +118,10 @@ export const playerMachine = createMachine(
           t.seconds > 10 + context.song.start
             ? t.seconds - 10
             : context.song.start),
-      setVolume: assign(({ event }) => {
+      setVolume: assign(({ context, event }) => {
         if (event.type !== "setVolume") throw new Error();
+        console.log("context", context);
+        console.log("event", event);
         return {
           volume: event.volume,
         };

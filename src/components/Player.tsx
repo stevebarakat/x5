@@ -1,9 +1,9 @@
 import { PlayerMachineContext } from "@/machines/playerMachine";
-import useSong from "../useSong";
+import useSong from "../hooks/useSong";
 import { nelly } from "../assets/nelly";
 import Loader from "@/components/Loader";
 import Play from "@/components/Transport";
-
+console.log("nelly", nelly);
 export default function Player() {
   const { volume } = PlayerMachineContext.useSelector((state) => state.context);
   const { send } = PlayerMachineContext.useActorRef();
@@ -25,6 +25,7 @@ export default function Player() {
             send({
               type: "setVolume",
               volume: parseInt(e.currentTarget.value, 10),
+              channel,
             })
           }
         />

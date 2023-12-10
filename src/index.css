@@ -48,13 +48,8 @@
   color-scheme: light dark;
 }
 
-@font-face {
-  font-family: "Bricolage Grotesque";
-  src: url("../assets/fonts/bricolage-grotesque.woff2") format("woff2");
-}
-
 body {
-  font-family: "Bricolage Grotesque", system-ui, Helvetica, Arial, sans-serif;
+  font-family: system-ui, Helvetica, Arial, sans-serif;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
 }
