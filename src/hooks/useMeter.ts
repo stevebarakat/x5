@@ -1,9 +1,8 @@
 import { useEffect, useCallback, useRef, useState } from "react";
 import { Meter } from "tone";
+import { type Destination } from "tone/build/esm/core/context/Destination";
 
-export default function useMeter(
-  channels: (Destination | Channel | BusChannel)[]
-) {
+export default function useMeter(channels: Destination[]) {
   const [meterVals, setMeterVals] = useState<Float32Array>(
     () => new Float32Array(channels.length)
   );
