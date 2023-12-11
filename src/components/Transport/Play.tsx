@@ -7,7 +7,6 @@ function Play() {
   const state = PlayerContext.useSelector((state) => state);
 
   function handleClick() {
-    console.log("state", state.value);
     if (!state.matches({ loaded: { playbackMode: "playing" } })) {
       send({ type: "play" });
     }
@@ -16,12 +15,6 @@ function Play() {
     }
   }
 
-  {
-    console.log(
-      "state",
-      state.matches({ loaded: { playbackMode: "playing" } })
-    );
-  }
   return (
     <TransportButton onClick={handleClick}>
       {!state.matches({ loaded: { playbackMode: "playing" } }) ? (

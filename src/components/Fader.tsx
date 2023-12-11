@@ -2,7 +2,7 @@ import VuMeter from "@/components/VuMeter";
 import useMeter from "@/hooks/useMeter";
 import { Destination } from "tone";
 import { PlayerContext } from "@/machines/playerMachine";
-import PlaybackMode from "./PlaybackMode";
+import AutomationMode from "./AutomationMode";
 
 export default function Main() {
   const meterVal = useMeter([Destination]);
@@ -36,7 +36,7 @@ export default function Main() {
         </div>
         <div className="channel-label">Volume</div>
       </div>
-      <PlaybackMode />
+      <AutomationMode />
     </div>
   );
 }

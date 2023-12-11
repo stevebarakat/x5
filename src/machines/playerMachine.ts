@@ -2,40 +2,62 @@ import { createActorContext } from "@xstate/react";
 import { assign, createMachine } from "xstate";
 import { dbToPercent, log } from "@/utils";
 import { nelly } from "@/assets/nelly";
+import type { Song } from "@/hooks/useSong";
 import {
   start as initializeAudio,
   getContext as getAudioContext,
   Transport as t,
   Destination,
+  Player,
 } from "tone";
 
 const audio = getAudioContext();
 
-const initialContext = {
+type InitialConext = {
+  song: Song;
+  volume: number;
+  mode: "off" | "read" | "write";
+  player: Player | undefined;
+};
+
+const initialContext: InitialConext = {
   song: nelly,
   volume: -32,
-  mode: "static",
+  mode: "off",
+  player: undefined,
 };
 
 export const playerMachine = createMachine(
   {
     id: "player",
     context: initialContext,
-    initial: "loading",
+    initial: "idle",
     states: {
-      loading: {
-        on: {
-          loaded: {
-            target: "loaded",
-          },
+      idle: {
+        entry: {
+          type: "initializePlayer",
+        },
+        invoke: {
+          src: "loader",
+          id: "loaded",
+          onDone: [
+            {
+              target: "loaded",
+            },
+          ],
+          onError: [
+            {
+              target: "idle",
+            },
+          ],
         },
       },
       loaded: {
         states: {
           automationMode: {
-            initial: "off",
+            initial: "disabled",
             states: {
-              off: {
+              disabled: {
                 on: {
                   write: {
                     target: "writing",
@@ -48,7 +70,7 @@ export const playerMachine = createMachine(
               writing: {
                 on: {
                   disable: {
-                    target: "off",
+                    target: "disabled",
                   },
                   read: {
                     target: "reading",
@@ -58,7 +80,7 @@ export const playerMachine = createMachine(
               reading: {
                 on: {
                   disable: {
-                    target: "off",
+                    target: "disabled",
                   },
                   write: {
                     target: "writing",
@@ -137,6 +159,9 @@ export const playerMachine = createMachine(
   },
   {
     actions: {
+      initializePlayer: ({ context, event }) => {
+        context.player = new Player();
+      },
       play: () => {
         if (audio.state === "suspended") {
           initializeAudio();
@@ -165,7 +190,11 @@ export const playerMachine = createMachine(
         };
       }),
     },
-    actors: {},
+    actors: {
+      loader: createMachine({
+        /* ... */
+      }),
+    },
     guards: {
       canFF: ({ context }) => {
         return t.seconds < context.song.end;
