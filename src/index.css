@@ -125,6 +125,8 @@ button:focus-visible {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+  gap: 12px;
   height: fit-content;
 }
 
@@ -239,6 +241,7 @@ h5 {
   padding: 8px;
   border-radius: 8px;
   color: var(--primary-color);
+  width: 6ch;
 }
 
 .range-x {
@@ -252,8 +255,8 @@ h5 {
   rotate: 270deg;
   display: flex;
   flex-direction: column;
-  top: 2px;
-  width: 358px;
+  top: 52px;
+  width: 257px;
   height: 140px;
   position: relative;
 }

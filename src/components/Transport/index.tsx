@@ -6,7 +6,7 @@ import Play from "./Play";
 
 function Transport() {
   return (
-    <div className="flex gap12">
+    <div className="flex-y gap12">
       <div className="flex gap4">
         <Reset />
         <Rewind />

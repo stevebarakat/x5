@@ -19,9 +19,9 @@ export default function Main() {
   return (
     <div className="channel">
       <div className="flex-y center fader-wrap">
-        <div className="window">{`${volume.toFixed(0)} dB`}</div>
+        <div className="window">{`${(volume + 100).toFixed(0)} dB`}</div>
         <div className="levels-wrap">
-          <VuMeter meterValue={meterVal} height={350} width={25} />
+          <VuMeter meterValue={meterVal} height={250} width={25} />
         </div>
         <div className="vol-wrap">
           <input

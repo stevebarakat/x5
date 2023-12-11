@@ -32,7 +32,7 @@ export const playerMachine = createMachine(
       },
       loaded: {
         states: {
-          AutomationMode: {
+          automationMode: {
             initial: "off",
             states: {
               off: {
@@ -67,7 +67,7 @@ export const playerMachine = createMachine(
               },
             },
           },
-          PlaybackMode: {
+          playbackMode: {
             initial: "stopped",
             states: {
               stopped: {
