@@ -199,7 +199,6 @@ export const playerMachine = createMachine(
     actors: {
       loaderActor: fromPromise(async () => {
         await loaded();
-        return console.log("LOADED!!!");
       }),
     },
     guards: {
