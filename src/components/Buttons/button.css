@@ -11,7 +11,7 @@
 }
 
 .transport-button {
-  background: ivory;
+  background: black;
   color: var(--primary-color);
   position: relative;
   display: flex;
@@ -57,14 +57,14 @@
   user-select: none;
   cursor: pointer;
   font-weight: 900;
-  background: ivory;
+  background: black;
   color: var(--primary-color);
   transition: all 0.2s;
 }
 
 .channel input[type="checkbox"]:checked + label {
   background: var(--primary-color);
-  color: ivory;
+  color: black;
   /* padding: 2px 5px; */
   border-radius: 100%;
   height: min-content;
@@ -82,12 +82,13 @@
   left: -1000px;
   width: 0;
   height: 0;
+  cursor: pointer;
 }
 
 .channels input[type="radio"]:checked + label svg,
 .fx-panel input[type="radio"]:checked + label svg {
   background: var(--primary-color);
-  color: ivory;
+  color: black;
   transition: all 0.2s;
   border-radius: 100%;
   padding: 0;

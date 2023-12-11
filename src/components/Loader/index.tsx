@@ -1,9 +1,9 @@
-import { PlayerMachineContext } from "@/machines/playerMachine";
+import { PlayerContext } from "@/machines/playerMachine";
 import { loaded } from "tone";
 import "./styles.css";
 
 const Spinner = () => {
-  const { send } = PlayerMachineContext.useActorRef();
+  const { send } = PlayerContext.useActorRef();
 
   loaded().then(() => send({ type: "loaded" }));
 

@@ -1,14 +1,24 @@
 import { useEffect, useRef, useCallback, useState } from "react";
-import { Transport as t } from "tone";
+import { PlayerContext } from "@/machines/playerMachine";
 import { formatMilliseconds } from "@/utils";
+import { Transport as t } from "tone";
 import "./style.css";
 
 function Clock() {
-  const requestRef = useRef<number | null>(null);
+  const { song } = PlayerContext.useSelector((state) => state.context);
+  const animation = useRef<number | null>(null);
   const [clock, setClock] = useState(formatMilliseconds(0));
 
+  if (t.seconds < song.start) {
+    t.seconds = song.start;
+  }
+  if (t.seconds > song.end) {
+    t.stop();
+    t.seconds = song.end;
+  }
+
   const animateClock = useCallback(() => {
-    requestRef.current = requestAnimationFrame(animateClock);
+    animation.current = requestAnimationFrame(animateClock);
     setClock(formatMilliseconds(t.seconds));
   }, []);
 
@@ -16,8 +26,8 @@ function Clock() {
     requestAnimationFrame(animateClock);
 
     return () => {
-      if (requestRef.current === null) return;
-      cancelAnimationFrame(requestRef.current);
+      if (animation.current === null) return;
+      cancelAnimationFrame(animation.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

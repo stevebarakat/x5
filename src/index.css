@@ -43,6 +43,13 @@
     25px 50px 62.9px -2.5px hsl(var(--shadow-color) / 0.1);
 }
 
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
 * {
   accent-color: var(--primary-color);
   color-scheme: light dark;
@@ -202,4 +209,111 @@ h5 {
 
 .rotate {
   animation: rotation 2s infinite linear;
+}
+
+.levels-wrap {
+  padding: 24px;
+}
+.vol-wrap {
+  position: relative;
+  top: -285px;
+  height: 0;
+}
+
+.fader-wrap {
+  position: relative;
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  border: none;
+  max-width: 104px;
+  margin: 0 2px;
+  background: var(--redLinear);
+  padding: 12px 4px 0;
+}
+
+.window {
+  border: 1px solid var(--primary-color-4);
+  padding: 8px;
+  border-radius: 8px;
+  color: var(--primary-color);
+}
+
+.range-x {
+  width: 100%;
+  padding: 8px 0;
+}
+
+.range-y {
+  appearance: none;
+  background: none;
+  rotate: 270deg;
+  display: flex;
+  flex-direction: column;
+  top: 2px;
+  width: 358px;
+  height: 140px;
+  position: relative;
+}
+
+.volume::-webkit-slider-runnable-track {
+  height: 32px;
+  width: 350px;
+  cursor: pointer;
+  background: none;
+  position: relative;
+  border: 4px solid black;
+  border-radius: 12px;
+}
+
+.volume::-webkit-slider-thumb {
+  appearance: none;
+  background-image: -webkit-linear-gradient(
+    top,
+    hsl(214, 8%, 59%) 0%,
+    hsl(214, 8%, 95%) 15%,
+    hsl(214, 8%, 71%) 35%,
+    hsl(214, 8%, 63%) 50%,
+    hsl(214, 8%, 71%) 65%,
+    hsl(214, 8%, 95%) 85%,
+    hsl(214, 8%, 59%) 100%
+  );
+  border-radius: 4px;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.85);
+  cursor: pointer;
+  height: 40px;
+  top: -8.5px;
+  position: relative;
+  /* top: 200px; */
+  width: 40px;
+  transform: rotate(90deg);
+}
+
+.channel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: black;
+  background: black;
+  padding: 20px;
+  align-items: center;
+  max-width: 120px;
+  border-radius: 8px;
+  height: 100%;
+  overflow: hidden;
+  justify-content: flex-end;
+  color: var(--primary-color);
+}
+.channel-label {
+  color: var(--primary-color);
+  font-weight: 400;
+  user-select: none;
+  padding: 16px 4px 0;
+  width: 120px;
+  border-radius: 0 0 12px 12px;
+  position: relative;
+  border-top: 1px solid var(--primary-color-3);
+  bottom: 0px;
 }

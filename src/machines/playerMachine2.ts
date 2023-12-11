@@ -26,94 +26,49 @@ export const playerMachine = createMachine(
       loading: {
         on: {
           loaded: {
-            target: "loaded",
+            target: "stopped",
           },
         },
       },
-      loaded: {
-        states: {
-          AutomationMode: {
-            initial: "off",
-            states: {
-              off: {
-                on: {
-                  write: {
-                    target: "writing",
-                  },
-                  read: {
-                    target: "reading",
-                  },
-                },
-              },
-              writing: {
-                on: {
-                  disable: {
-                    target: "off",
-                  },
-                  read: {
-                    target: "reading",
-                  },
-                },
-              },
-              reading: {
-                on: {
-                  disable: {
-                    target: "off",
-                  },
-                  write: {
-                    target: "writing",
-                  },
-                },
-              },
-            },
+      stopped: {
+        on: {
+          play: {
+            target: "playing",
           },
-          PlaybackMode: {
-            initial: "stopped",
-            states: {
-              stopped: {
-                on: {
-                  play: {
-                    target: "playing",
-                  },
-                },
-              },
-              playing: {
-                entry: {
-                  type: "play",
-                },
-                on: {
-                  reset: {
-                    target: "stopped",
-                    actions: {
-                      type: "reset",
-                    },
-                  },
-                  pause: {
-                    target: "stopped",
-                    actions: {
-                      type: "pause",
-                    },
-                  },
-                },
-              },
+        },
+      },
+      playing: {
+        entry: {
+          type: "play",
+        },
+        on: {
+          pause: {
+            target: "stopped",
+            actions: {
+              type: "pause",
             },
           },
         },
-        type: "parallel",
       },
     },
     on: {
-      fastFwd: {
-        guard: "canFF",
+      reset: {
+        target: ".stopped",
         actions: {
-          type: "fastFwd",
+          type: "reset",
         },
       },
       rewind: {
-        guard: "canRew",
         actions: {
           type: "rewind",
         },
+        guard: "canRew",
+      },
+      fastFwd: {
+        actions: {
+          type: "fastFwd",
+        },
+        guard: "canFF",
       },
       setVolume: {
         actions: {
@@ -123,16 +78,13 @@ export const playerMachine = createMachine(
     },
     types: {
       events: {} as
-        | { type: "fastFwd" }
-        | { type: "rewind" }
-        | { type: "setVolume"; volume: number }
-        | { type: "read" }
+        | { type: "play" }
         | { type: "pause" }
         | { type: "reset" }
-        | { type: "write" }
-        | { type: "disable" }
         | { type: "loaded" }
-        | { type: "play" },
+        | { type: "fastFwd" }
+        | { type: "rewind" }
+        | { type: "setVolume"; volume: number },
     },
   },
   {

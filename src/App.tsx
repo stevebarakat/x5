@@ -1,11 +1,11 @@
 import Player from "./components/Player";
-import { PlayerMachineContext } from "./machines/playerMachine";
+import { PlayerContext } from "./machines/playerMachine";
 
 export const App = () => {
   return (
-    <PlayerMachineContext.Provider>
+    <PlayerContext.Provider>
       <Player />
-    </PlayerMachineContext.Provider>
+    </PlayerContext.Provider>
   );
 };
 
