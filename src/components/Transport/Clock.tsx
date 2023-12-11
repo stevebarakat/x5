@@ -9,8 +9,8 @@ function Clock() {
   const animation = useRef<number | null>(null);
   const [clock, setClock] = useState(formatMilliseconds(0));
 
-  if (t.seconds < song.start) {
-    t.seconds = song.start;
+  if (t.seconds < 0) {
+    t.seconds = 0;
   }
   if (t.seconds > song.end) {
     t.stop();

@@ -1,5 +1,5 @@
 import { createActorContext } from "@xstate/react";
-import { assign, createMachine } from "xstate";
+import { assign, createMachine, fromPromise } from "xstate";
 import { dbToPercent, log } from "@/utils";
 import { nelly } from "@/assets/nelly";
 import type { Song } from "@/hooks/useSong";
@@ -9,6 +9,7 @@ import {
   Transport as t,
   Destination,
   Player,
+  loaded,
 } from "tone";
 
 const audio = getAudioContext();
@@ -38,7 +39,7 @@ export const playerMachine = createMachine(
           type: "initializePlayer",
         },
         invoke: {
-          src: "loader",
+          src: "loaderActor",
           id: "loaded",
           onDone: [
             {
@@ -159,8 +160,13 @@ export const playerMachine = createMachine(
   },
   {
     actions: {
-      initializePlayer: ({ context, event }) => {
-        context.player = new Player();
+      initializePlayer: ({ context: { song } }) => {
+        return {
+          player: new Player(song.url)
+            .sync()
+            .start(0, song.start)
+            .toDestination(),
+        };
       },
       play: () => {
         if (audio.state === "suspended") {
@@ -171,10 +177,10 @@ export const playerMachine = createMachine(
         }
       },
       pause: () => t.pause(),
-      reset: () => {
+      reset: assign(({ context: { song } }) => {
         t.stop();
         t.seconds = 0;
-      },
+      }),
       fastFwd: () => {
         t.seconds = t.seconds + 10;
       },
@@ -191,8 +197,9 @@ export const playerMachine = createMachine(
       }),
     },
     actors: {
-      loader: createMachine({
-        /* ... */
+      loaderActor: fromPromise(async () => {
+        await loaded();
+        return console.log("LOADED!!!");
       }),
     },
     guards: {
@@ -200,7 +207,7 @@ export const playerMachine = createMachine(
         return t.seconds < context.song.end;
       },
       canRew: ({ context }) => {
-        return t.seconds > context.song.start + 10;
+        return t.seconds > context.song.start;
       },
     },
     delays: {},
