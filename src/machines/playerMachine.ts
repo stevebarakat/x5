@@ -2,7 +2,7 @@ import { createActorContext } from "@xstate/react";
 import { assign, createMachine, fromPromise } from "xstate";
 import { dbToPercent, log } from "@/utils";
 import { nelly } from "@/assets/nelly";
-import type { Song } from "@/hooks/useSong";
+import type { Song } from "@/hooks/usePlayer";
 import {
   start as initializeAudio,
   getContext as getAudioContext,

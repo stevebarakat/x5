@@ -7,7 +7,7 @@ export type Song = {
   end: number;
 };
 
-function useSong(song: Song) {
+function usePlayer(song: Song) {
   const player = useRef<Player | null>(null);
 
   useEffect(() => {
@@ -21,4 +21,4 @@ function useSong(song: Song) {
   return null;
 }
 
-export default useSong;
+export default usePlayer;
