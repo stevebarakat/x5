@@ -6,7 +6,7 @@ import type { Song } from "@/hooks/usePlayer";
 import {
   start as initializeAudio,
   getContext as getAudioContext,
-  Transport as t,
+  Transport,
   Destination,
   Player,
   loaded,
@@ -19,13 +19,15 @@ type InitialConext = {
   volume: number;
   mode: "off" | "read" | "write";
   player: Player | undefined;
+  t: typeof Transport;
 };
 
 const initialContext: InitialConext = {
   song: nelly,
   volume: -32,
   mode: "off",
-  player: undefined,
+  player: new Player().toDestination(),
+  t: Transport,
 };
 
 export const playerMachine = createMachine(
@@ -168,25 +170,27 @@ export const playerMachine = createMachine(
             .toDestination(),
         };
       },
-      play: () => {
+      play: assign(({ context: { t } }) => {
         if (audio.state === "suspended") {
           initializeAudio();
           t.start();
         } else {
           t.start();
         }
-      },
-      pause: () => t.pause(),
-      reset: assign(({ context: { song } }) => {
+      }),
+      pause: assign(({ context: { t } }) => {
+        t.pause();
+      }),
+      reset: assign(({ context: { t } }) => {
         t.stop();
         t.seconds = 0;
       }),
-      fastFwd: () => {
+      fastFwd: assign(({ context: { t } }) => {
         t.seconds = t.seconds + 10;
-      },
-      rewind: () => {
+      }),
+      rewind: assign(({ context: { t } }) => {
         t.seconds = t.seconds - 10;
-      },
+      }),
       setVolume: assign(({ event }) => {
         if (event.type !== "setVolume") throw new Error();
         const scaled = dbToPercent(log(event.volume));
@@ -202,11 +206,11 @@ export const playerMachine = createMachine(
       }),
     },
     guards: {
-      canFF: ({ context }) => {
-        return t.seconds < context.song.end;
+      canFF: ({ context: { song, t } }) => {
+        return t.seconds < song.end;
       },
-      canRew: ({ context }) => {
-        return t.seconds > context.song.start;
+      canRew: ({ context: { song, t } }) => {
+        return t.seconds > song.start;
       },
     },
     delays: {},
