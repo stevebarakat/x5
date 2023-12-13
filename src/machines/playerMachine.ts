@@ -42,10 +42,10 @@ export const playerMachine = createMachine(
         },
         invoke: {
           src: "loaderActor",
-          id: "loaded",
+          id: "getting.ready",
           onDone: [
             {
-              target: "loaded",
+              target: "ready",
             },
           ],
           onError: [
@@ -55,12 +55,12 @@ export const playerMachine = createMachine(
           ],
         },
       },
-      loaded: {
+      ready: {
         states: {
           automationMode: {
-            initial: "disabled",
+            initial: "off",
             states: {
-              disabled: {
+              off: {
                 on: {
                   write: {
                     target: "writing",
@@ -72,8 +72,8 @@ export const playerMachine = createMachine(
               },
               writing: {
                 on: {
-                  disable: {
-                    target: "disabled",
+                  "turn.off": {
+                    target: "off",
                   },
                   read: {
                     target: "reading",
@@ -82,8 +82,8 @@ export const playerMachine = createMachine(
               },
               reading: {
                 on: {
-                  disable: {
-                    target: "disabled",
+                  "turn.off": {
+                    target: "off",
                   },
                   write: {
                     target: "writing",
@@ -106,6 +106,10 @@ export const playerMachine = createMachine(
                 entry: {
                   type: "play",
                 },
+                invoke: {
+                  src: "tickerActor",
+                  id: "start.ticker",
+                },
                 on: {
                   reset: {
                     target: "stopped",
@@ -122,42 +126,41 @@ export const playerMachine = createMachine(
                 },
               },
             },
+            on: {
+              fastFwd: {
+                guard: "canFF",
+                actions: {
+                  type: "fastFwd",
+                },
+              },
+              rewind: {
+                guard: "canRew",
+                actions: {
+                  type: "rewind",
+                },
+              },
+              setVolume: {
+                actions: {
+                  type: "setVolume",
+                },
+              },
+            },
           },
         },
         type: "parallel",
       },
     },
-    on: {
-      fastFwd: {
-        guard: "canFF",
-        actions: {
-          type: "fastFwd",
-        },
-      },
-      rewind: {
-        guard: "canRew",
-        actions: {
-          type: "rewind",
-        },
-      },
-      setVolume: {
-        actions: {
-          type: "setVolume",
-        },
-      },
-    },
     types: {
       events: {} as
+        | { type: "write" }
+        | { type: "read" }
+        | { type: "play" }
+        | { type: "reset" }
+        | { type: "pause" }
         | { type: "fastFwd" }
         | { type: "rewind" }
-        | { type: "setVolume"; volume: number }
-        | { type: "read" }
-        | { type: "pause" }
-        | { type: "reset" }
-        | { type: "write" }
-        | { type: "disable" }
-        | { type: "loaded" }
-        | { type: "play" },
+        | { type: "setVolume" }
+        | { type: "turn.off" },
     },
   },
   {
@@ -203,6 +206,9 @@ export const playerMachine = createMachine(
     actors: {
       loaderActor: fromPromise(async () => {
         await loaded();
+      }),
+      tickerActor: createMachine({
+        /* ... */
       }),
     },
     guards: {

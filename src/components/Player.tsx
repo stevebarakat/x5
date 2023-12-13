@@ -4,9 +4,9 @@ import Transport from "@/components/Transport";
 import Fader from "@/components/Fader";
 
 export default function Player() {
-  const loaded = PlayerContext.useSelector((state) => state.matches("loaded"));
+  const ready = PlayerContext.useSelector((state) => state.matches("ready"));
 
-  if (loaded) {
+  if (ready) {
     return (
       <div className="flex-y">
         <Fader />

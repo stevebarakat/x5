@@ -7,17 +7,17 @@ function Play() {
   const state = PlayerContext.useSelector((state) => state);
 
   function handleClick() {
-    if (!state.matches({ loaded: { playbackMode: "playing" } })) {
+    if (!state.matches({ ready: { playbackMode: "playing" } })) {
       send({ type: "play" });
     }
-    if (state.matches({ loaded: { playbackMode: "playing" } })) {
+    if (state.matches({ ready: { playbackMode: "playing" } })) {
       send({ type: "pause" });
     }
   }
 
   return (
     <TransportButton onClick={handleClick}>
-      {!state.matches({ loaded: { playbackMode: "playing" } }) ? (
+      {!state.matches({ ready: { playbackMode: "playing" } }) ? (
         <PlayIcon />
       ) : (
         <PauseIcon />

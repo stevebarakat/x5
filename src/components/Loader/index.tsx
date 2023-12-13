@@ -1,11 +1,11 @@
-// import { PlayerContext } from "@/machines/playerMachine";
+// import { PlayerContext } from "@/machines/mixerMachine";
 // import { loaded } from "tone";
 import "./styles.css";
 
 const Spinner = () => {
   // const { send } = PlayerContext.useActorRef();
 
-  // loaded().then(() => send({ type: "loaded" }));
+  // loaded().then(() => send({ type: "ready" }));
 
   return (
     <div className="loader">

@@ -14,8 +14,8 @@ function AutomationMode() {
   function setAutomationMode(e: React.FormEvent<HTMLInputElement>): void {
     const mode: "read" | "write" | "disable" = e.currentTarget.value;
     console.log("mode", mode);
-    console.log(state.matches({ loaded: { automationMode: "disabled" } }));
-    console.log("state", state.value.loaded.automationMode);
+    console.log(state.matches({ ready: { automationMode: "disabled" } }));
+    console.log("state", state.value.ready.automationMode);
     send({ type: mode });
   }
 
@@ -29,7 +29,7 @@ function AutomationMode() {
         name="read"
         onChange={setAutomationMode}
         // onChange={() => send({ type: "read" })}
-        checked={state.matches({ loaded: { automationMode: "reading" } })}
+        checked={state.matches({ ready: { automationMode: "reading" } })}
         value="read"
       >
         <PlayCircle />
@@ -41,10 +41,10 @@ function AutomationMode() {
         name="write"
         onChange={setAutomationMode}
         // onChange={() => send({ type: "write" })}
-        checked={state.matches({ loaded: { automationMode: "writing" } })}
+        checked={state.matches({ ready: { automationMode: "writing" } })}
         value="write"
       >
-        {state.matches({ loaded: { automationMode: "writing" } }) ? (
+        {state.matches({ ready: { automationMode: "writing" } }) ? (
           <CircleDotDashed className="rotate" />
         ) : (
           <CircleDot />
@@ -57,7 +57,7 @@ function AutomationMode() {
         name="off"
         onChange={setAutomationMode}
         // onChange={() => send({ type: "disable" })}
-        checked={state.matches({ loaded: { automationMode: "disable" } })}
+        checked={state.matches({ ready: { automationMode: "disable" } })}
         value="disabled"
       >
         <MinusCircle />
