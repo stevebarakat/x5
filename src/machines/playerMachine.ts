@@ -159,7 +159,7 @@ export const playerMachine = createMachine(
         | { type: "pause" }
         | { type: "fastFwd" }
         | { type: "rewind" }
-        | { type: "setVolume" }
+        | { type: "setVolume"; volume: number }
         | { type: "turn.off" },
     },
   },
@@ -208,6 +208,7 @@ export const playerMachine = createMachine(
         await loaded();
       }),
       tickerActor: createMachine({
+        /** @xstate-layout N4IgpgJg5mDOIC5gF8A0IB2B7CdGgAoBbAQwGMALASwzAEp8QAHLWKgFyqw0YA9EAjACZ0AT0FDkU5EA */
         /* ... */
       }),
     },
