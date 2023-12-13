@@ -1,5 +1,5 @@
 import { createActorContext } from "@xstate/react";
-import { assign, createMachine, fromPromise } from "xstate";
+import { assign, createMachine, fromObservable, fromPromise } from "xstate";
 import { dbToPercent, log } from "@/utils";
 import { nelly } from "@/assets/nelly";
 import type { Song } from "@/hooks/usePlayer";
@@ -11,6 +11,7 @@ import {
   Player,
   loaded,
 } from "tone";
+import { interval } from "rxjs";
 
 const audio = getAudioContext();
 
@@ -20,6 +21,7 @@ type InitialConext = {
   mode: "off" | "read" | "write";
   player: Player | undefined;
   t: typeof Transport;
+  clock: number;
 };
 
 const initialContext: InitialConext = {
@@ -28,10 +30,12 @@ const initialContext: InitialConext = {
   mode: "off",
   player: new Player().toDestination(),
   t: Transport,
+  clock: 0,
 };
 
 export const playerMachine = createMachine(
   {
+    /** @xstate-layout N4IgpgJg5mDOIC5QAcA2BDAnmATgOgEsJUwBiCAewDsxCqA3Cga1pgBc2Cqo8cx0ImANoAGALqIUFWAU7VJIAB6IArACYANCEyIAjCJUAOPADZ1hgCxrDATjUmAzCYDsAX1da0WXIWJlcOBT4XmwAZkEAtnjsnNy8-IKiEkggyNKyBPIpygi6Dg54Ts66zoYONhbqDmoqWjoIhrp46iIi+jYmFQ7OKjbunhjY+HwCmHjoAK5sFBHoclQAshQQtBShoaQA7jiyYEkKaTLzCjkWumqmIjblIqVOhiKVdYjOzhZ4as6tah0qVrcqfqpQY+EaCcZTGZzTKLZardakMH7FKHDJZUCnc6Xa42W5lEwPJ7aRAmAzNNTfZxmFRFExArxDeKjCHTWbzJYrPDbDLcUhsCY4Kh4NahZFSI4wk6IM4XUk4vH3R61YkIZxqAqvb5lNS6EwWKn0kHDBJjSas6HUDm0bmxKCIhJi1LpY7ZEnlPC2ESOTo-AkiBzPVVUvCakS+v4UnqG7zG5lmqHsuFMiBcO38wXC9aO1EujFumwe3HeuwdB4BlW2FR4MOtBz+ikWQxRjzAmPJ02Qtkwq3J1NbHZsPbiA7OyWuhBmZymYqGJt1lRenqBtUmD5fMPa3X6ukthmgk14BkAI3QAGMmFbSKF0LA2AAxTYQbOj9FKVQOJqvBxWB62XRNixA10EopysExrE+f8AMBXcjXbQ9BhPc9Lz4TYuCfYcURfKgpQQGlVwcFRdBUEw9V6GxrkAlV9EaPB9Q-FQZ16OVo0ZMExmPM8LzhUhYDANgADUKFQCYIiHZJxTRHDx3UC4LAomxZ0ogx9UDRSqxaf1dRpR5mwGNt2IQrAkO4zlbwoZBkEgUgGWfCVXxyBcRDwa4emA8oXFIwwgPKd4mwqYCLBcD81AsVj92ZTjkKTBk+z4Pi2DsqTcMbC5GMaBxLEbfQREsIC-iafIakyorSh3fS2IPKLTNoWLeWQSY+KS3M3wQVLmlKPIssaVo8uoixKkKZwAs+Cim1C9wWyoOF4BRI0R3s6S8wQABaXRAxWqtFNaHbdp2sLYLbIgSAW5Lx1U6jv2rClWhMXQzm-MtwtjQRTpanJI2xM59HVR4LvqCw63JVoSiue7LF0Z74PjLtLThN6x2Wmoqzlb6wzrAbnEDIjjBrDcvSuHVytbSq407C1YU5EUEYcxA6wKVHgPRv6sZVO6C0YrUDCIwjib3F6O3NRNORtVMaaW1qdMKaw8n9IKSLDZdqkKGknH-TU3jUKHDJhimezBMWsMW3CqSnOVuj1OwFc0FU1QLcDax6P5bAJbWqsQrirXF3D7Gcxmfox-69F9oaKlymoSlnLXDtJ8Fqp7czLMgb2ZIqPB1YXMwGzact6nu4p04MGw3lxVp5OjiqIrjj3os5OqoBT5a62Mf3mcx-L-zo78mf-XLhpg9wgA */
     id: "player",
     context: initialContext,
     initial: "idle",
@@ -93,6 +97,17 @@ export const playerMachine = createMachine(
             },
           },
           playbackMode: {
+            invoke: {
+              src: "tickerActor",
+              id: "start.ticker",
+              onSnapshot: {
+                actions: assign(({ context }) => {
+                  console.log("context.t.seconds", context.t.seconds);
+                  console.log("context.clock", context.clock);
+                  return context.t.seconds;
+                }),
+              },
+            },
             initial: "stopped",
             states: {
               stopped: {
@@ -105,10 +120,6 @@ export const playerMachine = createMachine(
               playing: {
                 entry: {
                   type: "play",
-                },
-                invoke: {
-                  src: "tickerActor",
-                  id: "start.ticker",
                 },
                 on: {
                   reset: {
@@ -207,10 +218,7 @@ export const playerMachine = createMachine(
       loaderActor: fromPromise(async () => {
         await loaded();
       }),
-      tickerActor: createMachine({
-        /** @xstate-layout N4IgpgJg5mDOIC5gF8A0IB2B7CdGgAoBbAQwGMALASwzAEp8QAHLWKgFyqw0YA9EAjACZ0AT0FDkU5EA */
-        /* ... */
-      }),
+      tickerActor: fromObservable(() => interval(10)),
     },
     guards: {
       canFF: ({ context: { song, t } }) => {
