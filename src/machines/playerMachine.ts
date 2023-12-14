@@ -38,7 +38,7 @@ export const playerMachine = createMachine(
     states: {
       idle: {
         entry: {
-          type: "initializePlayer",
+          type: "initPlayer",
         },
         invoke: {
           src: "loaderActor",
@@ -170,7 +170,7 @@ export const playerMachine = createMachine(
   },
   {
     actions: {
-      initializePlayer: ({ context: { song } }) => {
+      initPlayer: ({ context: { song } }) => {
         return {
           player: new Player(song.url)
             .sync()
@@ -209,9 +209,7 @@ export const playerMachine = createMachine(
       }),
     },
     actors: {
-      loaderActor: fromPromise(async () => {
-        await loaded();
-      }),
+      loaderActor: fromPromise(async () => await loaded()),
       tickerActor: fromObservable(() => interval(0, animationFrameScheduler)),
     },
     guards: {

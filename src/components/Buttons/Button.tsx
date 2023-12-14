@@ -6,7 +6,6 @@ type Props = {
   id?: string;
   name?: string;
   title?: string;
-  value?: string | number | undefined;
   disabled?: boolean;
   className?: string;
   onClick?:

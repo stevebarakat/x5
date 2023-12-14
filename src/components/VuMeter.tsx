@@ -1,5 +1,4 @@
 import { useRef, useEffect, useCallback } from "react";
-import invariant from "tiny-invariant";
 
 // Settings
 let curVal = 0;
@@ -46,15 +45,13 @@ function VuMeter({ meterValue, height, width }: MeterProps) {
   }, []);
 
   useEffect(() => {
-    invariant(stage.current, "canvas not initiated");
-    const c = stage.current.getContext("2d");
+    const c = stage.current?.getContext("2d");
     if (c == null) throw new Error("Could not get context");
 
     const draw = function () {
-      invariant(stage.current, "canvas not initiated");
-      const targetVal: string | undefined = stage.current.dataset.volume;
+      const targetVal: string | undefined = stage.current?.dataset.volume;
 
-      invariant(targetVal, "target value not defined");
+      if (!targetVal) return;
       const targetValNum: number = parseInt(targetVal, 10);
 
       // Gradual approach
@@ -100,7 +97,7 @@ function VuMeter({ meterValue, height, width }: MeterProps) {
   }, [width, height, boxHeight, boxGapY, boxGapX, getBoxColor, boxWidth]);
 
   useEffect(() => {
-    invariant(stage.current, "canvas not initiated");
+    if (!stage.current) return;
     stage.current.dataset.volume = meterValue.toString();
   }, [meterValue]);
 
