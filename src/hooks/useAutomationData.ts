@@ -10,7 +10,7 @@ function useAutomationData() {
   });
   const volume: number = state.context.volume;
   useWrite({ value: volume });
-  // useRead();
+  useRead();
   return null;
 }
 
@@ -19,7 +19,6 @@ const data = new Map<number, object>();
 // !!! --- WRITE --- !!! //
 function useWrite({ value }: Props) {
   const state = PlayerContext.useSelector((state) => state);
-  console.log("state", state.value.ready.automationMode);
   const isWriting = state.matches({ ready: { automationMode: "writing" } });
   const t = state.context.t;
 
@@ -47,46 +46,38 @@ function useWrite({ value }: Props) {
   return data;
 }
 
-// // !!! --- READ --- !!! //
-// function useRead() {
-//   const { send } = PlayerContext.useActorRef();
-//   const playbackMode = PlayerContext.useSelector(
-//     (state) => state.context.currentTracks[trackId].volumeMode
-//   );
+// !!! --- READ --- !!! //
+function useRead() {
+  const { send } = PlayerContext.useActorRef();
+  const state = PlayerContext.useSelector((state) => state);
+  const t = state.context.t;
+  const isReading = state.matches({ ready: { automationMode: "reading" } });
 
-//   const setParam = useCallback(
-//     (
-//       trackId: number,
-//       data: {
-//         time: number;
-//         value: number;
-//       }
-//     ) => {
-//       t.schedule(() => {
-//         if (playbackMode !== "read") return;
+  const setVolume = useCallback(
+    (data: { time: number; value: number }) => {
+      t.schedule(() => {
+        if (!isReading) return;
 
-//         send({
-//           type: "SET_TRACK_VOLUME",
-//           trackId,
-//           channels,
-//           value: data.value,
-//         });
-//       }, data.time);
-//     },
-//     [playbackMode, channels, send]
-//   );
+        send({
+          type: "setVolume",
+          volume: data.value,
+        });
+      }, data.time);
+    },
+    [isReading, send, t]
+  );
 
-//   const volumeData = localStorageGet("volumeData");
+  const volumeData = localStorageGet("volumeData");
 
-//   useEffect(() => {
-//     if (playbackMode !== "read" || !volumeData) return;
-//     const objectToMap = (obj) => new Map(Object.entries(obj));
-//     const newVolData = objectToMap(volumeData);
-//     for (const value of newVolData) {
-//       setParam(value[1].id, value[1]);
-//     }
-//   }, [volumeData, setParam, playbackMode]);
+  useEffect(() => {
+    if (!isReading || !volumeData) return;
+    const objectToMap = (obj: typeof data) => new Map(Object.entries(obj));
+    const newVolData = objectToMap(volumeData);
+    for (const value of newVolData) {
+      setVolume(value[1]);
+    }
+  }, [volumeData, setVolume, isReading]);
 
-//   return null;
-// }
+  return null;
+}
 export default useAutomationData;
