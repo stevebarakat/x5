@@ -68,22 +68,14 @@ export const playerMachine = createMachine(
               },
               writing: {
                 on: {
-                  off: {
-                    target: "off",
-                  },
-                  read: {
-                    target: "reading",
-                  },
+                  off: "off",
+                  read: "reading",
                 },
               },
               reading: {
                 on: {
-                  off: {
-                    target: "off",
-                  },
-                  write: {
-                    target: "writing",
-                  },
+                  off: "off",
+                  write: "writing",
                 },
               },
             },

@@ -1,11 +1,10 @@
 import VuMeter from "@/components/VuMeter";
 import useMeter from "@/hooks/useMeter";
-import { Destination } from "tone";
 import { PlayerContext } from "@/machines/playerMachine";
 import AutomationMode from "./AutomationMode";
 
 export default function Main() {
-  const meterVal = useMeter(Destination);
+  const meterVal = useMeter();
   const { volume } = PlayerContext.useSelector((state) => state.context);
   const { send } = PlayerContext.useActorRef();
 
@@ -16,6 +15,7 @@ export default function Main() {
     });
   }
 
+  console.log("message");
   return (
     <div>
       <div className="channel">

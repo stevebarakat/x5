@@ -1,25 +1,23 @@
 import { useEffect, useCallback, useRef, useState } from "react";
-import { Meter } from "tone";
-import { type Destination } from "tone/build/esm/core/context/Destination";
+import { Meter, Destination } from "tone";
 
-export default function useMeter(channel: Destination) {
+export default function useMeter() {
   const [meterVals, setMeterVals] = useState(() => 0);
   const meter = useRef<Meter | undefined>();
   const animation = useRef<number | null>(null);
 
-  // loop recursively to amimateMeters
-  const animateMeter = useCallback(() => {
-    const val = meter.current?.getValue();
-    if (typeof val === "number") {
-      setMeterVals(val);
-    }
-    animation.current = requestAnimationFrame(animateMeter);
-  }, []);
-
-  // create meter and trigger animateMeter
   useEffect(() => {
+    // loop recursively to amimateMeters
+    const animateMeter = () => {
+      const val = meter.current?.getValue();
+      if (typeof val !== "number") return;
+      setMeterVals(val);
+      animation.current = requestAnimationFrame(animateMeter);
+    };
+
+    // create meter and trigger animateMeter
     meter.current = new Meter();
-    channel.connect(meter.current);
+    Destination.connect(meter.current);
     requestAnimationFrame(animateMeter);
     return () => {
       animation.current && cancelAnimationFrame(animation.current);
