@@ -6,9 +6,11 @@ import type {
   Channel as ToneChannel,
 } from "tone";
 import type { Destination as ToneDestination } from "tone/build/esm/core/context/Destination";
+import { Transport as ToneTransport } from "tone/build/esm/core/clock/Transport";
 
 declare global {
   type Destination = ToneDestination;
+  type Transport = ToneTransport;
   type Channel = ToneChannel;
 
   type Fx = Volume | Reverb | FeedbackDelay | PitchShift;

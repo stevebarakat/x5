@@ -15,7 +15,7 @@ import { interval, animationFrameScheduler } from "rxjs";
 const audio = getAudioContext();
 
 type InitialConext = {
-  t: typeof Transport;
+  t: Transport;
   song: SourceSong;
   volume: number;
   player: Player | undefined;
@@ -159,12 +159,13 @@ export const playerMachine = createMachine(
         | { type: "write" }
         | { type: "read" }
         | { type: "off" }
-        | { type: "play" }
+        | { type: "play"; t: Transport }
         | { type: "reset" }
         | { type: "pause" }
         | { type: "fastFwd" }
         | { type: "rewind" }
         | { type: "setVolume"; volume: number };
+      guards: { type: "canFF" } | { type: "canRew" };
     },
   },
   {
@@ -180,13 +181,13 @@ export const playerMachine = createMachine(
       play: assign(({ context: { t } }) => {
         if (audio.state === "suspended") {
           initializeAudio();
-          t.start();
+          return t.start();
         } else {
-          t.start();
+          return t.start();
         }
       }),
       pause: assign(({ context: { t } }) => {
-        t.pause();
+        return t.pause();
       }),
       reset: assign(({ context: { t } }) => {
         t.stop();
