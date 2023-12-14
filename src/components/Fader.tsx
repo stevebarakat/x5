@@ -1,7 +1,7 @@
 import VuMeter from "@/components/VuMeter";
 import { PlayerContext } from "@/machines/playerMachine";
 import AutomationMode from "./AutomationMode";
-// import useAutomationData from "@/hooks/useAutomationData";
+import useAutomationData from "@/hooks/useAutomationData";
 
 export default function Main() {
   const { send } = PlayerContext.useActorRef();
@@ -9,7 +9,7 @@ export default function Main() {
     (state) => state.context
   );
 
-  // useAutomationData();
+  useAutomationData();
 
   if (typeof meterVal !== "number") return;
   function setVolume(e: React.FormEvent<HTMLInputElement>): void {

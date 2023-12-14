@@ -8,11 +8,10 @@ function AutomationMode() {
 
   function setAutomationMode(e: React.FormEvent<HTMLInputElement>): void {
     const mode: "read" | "write" | "off" = e.currentTarget.value;
-    console.log("mode", mode);
-    // console.log('type', type)
-    console.log(state.matches(e.currentTarget.value));
-    console.log("state", state.value.ready.automationMode);
-    console.log("e.currentTarget.value", e.currentTarget.value);
+    // console.log("mode", mode);
+    // console.log(state.matches(e.currentTarget.value));
+    // console.log("state", state.value.ready.automationMode);
+    // console.log("e.currentTarget.value", e.currentTarget.value);
     send({ type: mode });
   }
 
