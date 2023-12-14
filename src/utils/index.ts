@@ -1,11 +1,11 @@
-import { array, roundToOneTenth } from "./helpers";
+import { array, roundToFraction } from "./helpers";
 import { log, dbToPercent, scale } from "./scale";
 import { formatMilliseconds } from "./time";
 import { localStorageGet, localStorageSet } from "./localStorage";
 
 export {
   array,
-  roundToOneTenth,
+  roundToFraction,
   formatMilliseconds,
   log,
   scale,
