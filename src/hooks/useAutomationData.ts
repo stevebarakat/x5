@@ -1,6 +1,6 @@
 import { PlayerContext } from "@/machines/playerMachine";
 import { useEffect, useCallback } from "react";
-import { localStorageGet, localStorageSet, roundFourth } from "@/utils";
+import { localStorageGet, localStorageSet, roundToOneTenth } from "@/utils";
 
 type Props = { value: number };
 
@@ -27,14 +27,14 @@ function useWrite({ value }: Props) {
 
     const loop = t.scheduleRepeat(
       () => {
-        const time: number = roundFourth(t.seconds);
+        const time: number = roundToOneTenth(t.seconds);
         data.set(time, { id: 0, time, value });
         const mapToObject = (map: typeof data) =>
           Object.fromEntries(map.entries());
         const newData = mapToObject(data);
         localStorageSet("volumeData", newData);
       },
-      0.25,
+      0.1,
       0
     );
 

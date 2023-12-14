@@ -2,6 +2,6 @@ export function array(length: number, filler?: unknown) {
   return Array(length).fill(filler || null);
 }
 
-export function roundFourth(num: number): number {
-  return parseFloat((Math.round(num * 4) / 4).toFixed(2));
+export function roundToOneTenth(num: number): number {
+  return parseFloat((Math.round(num * 10) / 10).toFixed(2));
 }
