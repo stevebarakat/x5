@@ -3,7 +3,7 @@ import { PlayerContext } from "@/machines/playerMachine";
 import AutomationMode from "./AutomationMode";
 import useAutomationData from "@/hooks/useAutomationData";
 
-export default function Main() {
+export default function Fader() {
   const { send } = PlayerContext.useActorRef();
   const { volume, meterVal } = PlayerContext.useSelector(
     (state) => state.context
