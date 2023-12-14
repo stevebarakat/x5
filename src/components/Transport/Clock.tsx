@@ -1,9 +1,8 @@
 import { PlayerContext } from "@/machines/playerMachine";
-import { Transport as t } from "tone";
 import "./style.css";
 
 function Clock() {
-  const { song, currentTime } = PlayerContext.useSelector(
+  const { song, currentTime, t } = PlayerContext.useSelector(
     (state) => state.context
   );
 

@@ -15,7 +15,6 @@ export default function Main() {
     });
   }
 
-  console.log("message");
   return (
     <div>
       <div className="channel">
