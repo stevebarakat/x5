@@ -94,7 +94,7 @@ function VuMeter({ meterValue, height, width }: MeterProps) {
     return () => {
       drawRef.current !== null && cancelAnimationFrame(drawRef.current);
     };
-  }, [width, height, boxHeight, boxGapY, boxGapX, getBoxColor, boxWidth]);
+  }, [width, height, boxWidth, boxHeight, boxGapX, boxGapY, getBoxColor]);
 
   useEffect(() => {
     if (!stage.current) return;
