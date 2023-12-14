@@ -7,12 +7,9 @@ function AutomationMode() {
   const state = PlayerContext.useSelector((state) => state);
 
   function setAutomationMode(e: React.FormEvent<HTMLInputElement>): void {
-    const mode: "read" | "write" | "off" = e.currentTarget.value;
-    console.log("mode", mode);
-    // console.log('type', type)
-    console.log(state.matches(e.currentTarget.value));
-    console.log("state", state.value.ready.automationMode);
-    console.log("e.currentTarget.value", e.currentTarget.value);
+    const val = e.currentTarget.value;
+    if (typeof val === "string") return;
+    const mode: "read" | "write" | "off" = val;
     send({ type: mode });
   }
 
