@@ -17,15 +17,13 @@ export default function Main() {
   }
 
   return (
-    <div className="channel">
-      <div className="flex-y center fader-wrap">
-        <div className="window">{`${(volume + 100).toFixed(0)} dB`}</div>
-        <div className="levels-wrap">
+    <div>
+      <div className="channel">
+        <div className="fader-wrap">
+          <div className="window">{`${(volume + 100).toFixed(0)} dB`}</div>
           <VuMeter meterValue={meterVal} height={250} width={25} />
-        </div>
-        <div className="vol-wrap">
           <input
-            className="range-y volume main"
+            className="range-y volume"
             min={-100}
             max={0}
             step={0.1}
@@ -33,10 +31,10 @@ export default function Main() {
             value={volume}
             onChange={setVolume}
           />
+          <div className="channel-label">Volume</div>
         </div>
-        <div className="channel-label">Volume</div>
+        <AutomationMode />
       </div>
-      <AutomationMode />
     </div>
   );
 }

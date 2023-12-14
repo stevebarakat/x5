@@ -1,64 +1,50 @@
 import { PlayerContext } from "@/machines/playerMachine";
 import Toggle from "./Buttons/Toggle";
-import {
-  PlayCircle,
-  CircleDotDashed,
-  CircleDot,
-  MinusCircle,
-} from "lucide-react";
+import { PlayCircle, CircleDot, MinusCircle } from "lucide-react";
 
 function AutomationMode() {
   const { send } = PlayerContext.useActorRef();
   const state = PlayerContext.useSelector((state) => state);
 
   function setAutomationMode(e: React.FormEvent<HTMLInputElement>): void {
-    const mode: "read" | "write" | "disable" = e.currentTarget.value;
+    const mode: "read" | "write" | "off" = e.currentTarget.value;
     console.log("mode", mode);
-    console.log(state.matches({ ready: { automationMode: "disabled" } }));
+    // console.log('type', type)
+    console.log(state.matches(e.currentTarget.value));
     console.log("state", state.value.ready.automationMode);
+    console.log("e.currentTarget.value", e.currentTarget.value);
     send({ type: mode });
   }
 
   return (
     <div className="flex gap4">
       {/* {automationMode} */}
+      <Toggle
+        type="radio"
+        value="write"
+        name="playback-mode"
+        onChange={setAutomationMode}
+        checked={state.matches({ ready: { automationMode: "writing" } })}
+      >
+        <CircleDot />
+      </Toggle>
 
       <Toggle
         type="radio"
-        id="playback-mode"
-        name="read"
-        onChange={setAutomationMode}
-        // onChange={() => send({ type: "read" })}
-        checked={state.matches({ ready: { automationMode: "reading" } })}
         value="read"
+        name="playback-mode"
+        onChange={setAutomationMode}
+        checked={state.matches({ ready: { automationMode: "reading" } })}
       >
         <PlayCircle />
       </Toggle>
 
       <Toggle
         type="radio"
-        id="playback-mode"
-        name="write"
+        value="off"
+        name="playback-mode"
         onChange={setAutomationMode}
-        // onChange={() => send({ type: "write" })}
-        checked={state.matches({ ready: { automationMode: "writing" } })}
-        value="write"
-      >
-        {state.matches({ ready: { automationMode: "writing" } }) ? (
-          <CircleDotDashed className="rotate" />
-        ) : (
-          <CircleDot />
-        )}
-      </Toggle>
-
-      <Toggle
-        type="radio"
-        id="playback-mode"
-        name="off"
-        onChange={setAutomationMode}
-        // onChange={() => send({ type: "disable" })}
-        checked={state.matches({ ready: { automationMode: "disable" } })}
-        value="disabled"
+        checked={state.matches({ ready: { automationMode: "off" } })}
       >
         <MinusCircle />
       </Toggle>

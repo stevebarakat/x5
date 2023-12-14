@@ -199,40 +199,13 @@ h5 {
   font-size: 1.25rem;
 }
 
-/* ROTATE */
-@keyframes rotation {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(359deg);
-  }
-}
-
-.rotate {
-  animation: rotation 2s infinite linear;
-}
-
-.levels-wrap {
-  padding: 24px;
-}
-.vol-wrap {
-  position: relative;
-  top: -285px;
-  height: 0;
-}
-
 .fader-wrap {
   position: relative;
   display: flex;
   gap: 12px;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
   border: none;
-  max-width: 104px;
-  margin: 0 2px;
-  background: var(--redLinear);
   padding: 12px 4px 0;
 }
 
@@ -253,11 +226,8 @@ h5 {
   appearance: none;
   background: none;
   rotate: 270deg;
-  display: flex;
-  flex-direction: column;
-  top: 52px;
+  top: -115px;
   width: 257px;
-  height: 140px;
   position: relative;
 }
 
@@ -299,13 +269,10 @@ h5 {
   display: flex;
   flex-direction: column;
   background: black;
-  background: black;
-  padding: 20px;
+  padding: 10px;
   align-items: center;
-  max-width: 120px;
+  max-width: 100px;
   border-radius: 8px;
-  height: 100%;
-  overflow: hidden;
   justify-content: flex-end;
   color: var(--primary-color);
 }
@@ -313,10 +280,16 @@ h5 {
   color: var(--primary-color);
   font-weight: 400;
   user-select: none;
-  padding: 16px 4px 0;
-  width: 120px;
+  padding: 8px 4px 4px;
+  width: 85px;
   border-radius: 0 0 12px 12px;
   position: relative;
   border-top: 1px solid var(--primary-color-3);
   bottom: 0px;
+}
+
+.vu-meter {
+  height: 227px;
+  top: 17px;
+  position: relative;
 }

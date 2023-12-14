@@ -105,7 +105,7 @@ function VuMeter({ meterValue, height, width }: MeterProps) {
   }, [meterValue]);
 
   return (
-    <div style={{ display: "flex", justifyContent: "center" }}>
+    <div className="vu-meter">
       <canvas ref={stage} width={width} height={height} data-volume={0} />
     </div>
   );

@@ -85,8 +85,8 @@
   cursor: pointer;
 }
 
-.channels input[type="radio"]:checked + label svg,
-.fx-panel input[type="radio"]:checked + label svg {
+input[type="radio"].toggle:checked + label svg,
+input[type="checkbox"].toggle:checked + label svg {
   background: var(--primary-color);
   color: black;
   transition: all 0.2s;
@@ -107,9 +107,8 @@
   transition: all 0.2s;
 }
 
-.fx-panel input[type="radio"]:hover + label,
-.channels input[type="radio"]:hover + label,
-.solo-mute input[type="checkbox"]:hover + label {
+input[type="radio"].toggle:hover + label,
+input[type="checkbox"].toggle:hover + label {
   scale: 1.2;
   transition: all 0.2s;
 }

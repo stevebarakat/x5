@@ -10,7 +10,7 @@ export function formatSeconds(seconds: number) {
   return str;
 }
 
-export function formatMilliseconds(seconds: number) {
+export function formatMilliseconds(seconds: number): string {
   let ms: string | number = Math.floor((seconds * 1000) % 1000);
   let s: string | number = Math.floor(seconds % 60);
   let m: string | number = Math.floor(((seconds * 1000) / (1000 * 60)) % 60);
