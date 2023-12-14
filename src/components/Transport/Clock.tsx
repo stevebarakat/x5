@@ -3,7 +3,9 @@ import { Transport as t } from "tone";
 import "./style.css";
 
 function Clock() {
-  const { song, clock } = PlayerContext.useSelector((state) => state.context);
+  const { song, currentTime } = PlayerContext.useSelector(
+    (state) => state.context
+  );
 
   if (t.seconds < 0) {
     t.seconds = 0;
@@ -16,7 +18,7 @@ function Clock() {
   return (
     <div className="clock">
       <div className="ghost">88:88:88</div>
-      {clock}
+      {currentTime}
     </div>
   );
 }

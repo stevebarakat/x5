@@ -1,13 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Player } from "tone";
 
-export type Song = {
-  url: string;
-  start: number;
-  end: number;
-};
-
-function usePlayer(song: Song) {
+function usePlayer(song: SourceSong) {
   const player = useRef<Player | null>(null);
 
   useEffect(() => {

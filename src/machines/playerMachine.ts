@@ -2,7 +2,6 @@ import { createActorContext } from "@xstate/react";
 import { assign, createMachine, fromObservable, fromPromise } from "xstate";
 import { dbToPercent, formatMilliseconds, log } from "@/utils";
 import { nelly } from "@/assets/nelly";
-import type { Song } from "@/hooks/usePlayer";
 import {
   start as initializeAudio,
   getContext as getAudioContext,
@@ -16,11 +15,11 @@ import { interval, animationFrameScheduler } from "rxjs";
 const audio = getAudioContext();
 
 type InitialConext = {
-  song: Song;
+  t: typeof Transport;
+  song: SourceSong;
   volume: number;
   player: Player | undefined;
-  t: typeof Transport;
-  clock: string;
+  currentTime: string;
 };
 
 const initialContext: InitialConext = {
@@ -28,7 +27,7 @@ const initialContext: InitialConext = {
   volume: -32,
   player: new Player().toDestination(),
   t: Transport,
-  clock: "00:00:00",
+  currentTime: "00:00:00",
 };
 
 export const playerMachine = createMachine(
@@ -95,9 +94,9 @@ export const playerMachine = createMachine(
               id: "start.ticker",
               onSnapshot: {
                 actions: assign(({ context }) => {
-                  // console.log("context.t.seconds", context.t.seconds);
-                  // console.log("context.clock", context.clock);
-                  context.clock = formatMilliseconds(context.t.seconds);
+                  return (context.currentTime = formatMilliseconds(
+                    context.t.seconds
+                  ));
                 }),
               },
             },
