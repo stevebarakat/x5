@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Meter, Destination } from "tone";
 
 export default function useMeter() {
-  const [meterVals, setMeterVals] = useState(() => 0);
+  const [meterVal, setMeterVals] = useState(() => 0);
   const meter = useRef<Meter | undefined>();
   const animation = useRef<number | null>(null);
 
@@ -24,5 +24,5 @@ export default function useMeter() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  return meterVals;
+  return meterVal;
 }

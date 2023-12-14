@@ -22,7 +22,7 @@ type InitialConext = {
   t: Transport;
   currentTime: string;
   volume: number;
-  meterVals: number | number[] | undefined;
+  meterVal: number | number[] | undefined;
 };
 
 const initialContext: InitialConext = {
@@ -32,7 +32,7 @@ const initialContext: InitialConext = {
   t: Transport,
   currentTime: "00:00:00",
   volume: -32,
-  meterVals: 0,
+  meterVal: 0,
 };
 
 export const playerMachine = createMachine(
@@ -92,8 +92,9 @@ export const playerMachine = createMachine(
               id: "start.ticker",
               onSnapshot: {
                 actions: assign(({ context }) => {
+                  context.meter && Destination.connect(context.meter);
                   context.currentTime = formatMilliseconds(context.t.seconds);
-                  context.meterVals = context.meter?.getValue();
+                  context.meterVal = context.meter?.getValue();
                 }),
               },
             },
@@ -144,6 +145,11 @@ export const playerMachine = createMachine(
                   type: "setVolume",
                 },
               },
+              setMeter: {
+                actions: {
+                  type: "setMeter",
+                },
+              },
             },
           },
         },
@@ -161,7 +167,8 @@ export const playerMachine = createMachine(
         | { type: "pause" }
         | { type: "fastFwd" }
         | { type: "rewind" }
-        | { type: "setVolume"; volume: number };
+        | { type: "setVolume"; volume: number }
+        | { type: "setMeter"; meterVal: number };
       guards: { type: "canFF" } | { type: "canRew" };
     },
   },
@@ -195,6 +202,13 @@ export const playerMachine = createMachine(
       }),
       rewind: assign(({ context: { t } }) => {
         t.seconds = t.seconds - 10;
+      }),
+      setMeter: assign(({ context, event }) => {
+        if (event.type !== "setMeter") throw new Error();
+        context.meterVal = event.meterVal;
+        return {
+          meterVal: context.meterVal,
+        };
       }),
       setVolume: assign(({ event }) => {
         if (event.type !== "setVolume") throw new Error();
