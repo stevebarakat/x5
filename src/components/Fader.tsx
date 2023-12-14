@@ -5,7 +5,7 @@ import { PlayerContext } from "@/machines/playerMachine";
 import AutomationMode from "./AutomationMode";
 
 export default function Main() {
-  const meterVal = useMeter([Destination]);
+  const meterVal = useMeter(Destination);
   const { volume } = PlayerContext.useSelector((state) => state.context);
   const { send } = PlayerContext.useActorRef();
 
