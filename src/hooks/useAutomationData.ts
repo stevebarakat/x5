@@ -11,12 +11,14 @@ import {
 type Props = { value: number };
 
 function useAutomationData() {
-  const state = PlayerContext.useSelector((state) => {
-    return state;
+  const { volume } = PlayerContext.useSelector((state) => {
+    return state.context;
   });
-  const volume: number = state.context.volume;
-  useWrite({ value: volume });
+  const value: number = volume;
+
+  useWrite({ value });
   useRead();
+
   return null;
 }
 
@@ -31,7 +33,7 @@ function useWrite({ value }: Props) {
   useEffect(() => {
     if (!isWriting) return;
 
-    const loop = t.scheduleRepeat(
+    t.scheduleRepeat(
       () => {
         const time: number = roundToFraction(t.seconds, 4);
         data.current.set(time, { time, value });
@@ -41,10 +43,6 @@ function useWrite({ value }: Props) {
       0.1,
       0
     );
-
-    return () => {
-      t.clear(loop);
-    };
   }, [isWriting, t, value]);
 
   return data.current;
@@ -60,21 +58,19 @@ function useRead() {
   const setVolume = useCallback(
     (data: { time: number; value: number }) => {
       t.schedule(() => {
-        if (!isReading) return;
-
         send({
           type: "setVolume",
           volume: data.value,
         });
       }, data.time);
     },
-    [isReading, send, t]
+    [send, t]
   );
 
   const volumeData = localStorageGet("volumeData");
 
   useEffect(() => {
-    if (!isReading || !volumeData) return;
+    if (!isReading) return;
     const newVolData = objectToMap(volumeData);
     for (const value of newVolData) {
       setVolume(value[1]);
