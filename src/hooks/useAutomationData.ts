@@ -1,6 +1,12 @@
 import { PlayerContext } from "@/machines/playerMachine";
 import { useEffect, useCallback } from "react";
-import { localStorageGet, localStorageSet, roundToFraction } from "@/utils";
+import {
+  localStorageGet,
+  localStorageSet,
+  mapToObject,
+  objectToMap,
+  roundToFraction,
+} from "@/utils";
 
 type Props = { value: number };
 
@@ -29,8 +35,6 @@ function useWrite({ value }: Props) {
       () => {
         const time: number = roundToFraction(t.seconds, 4);
         data.set(time, { time, value });
-        const mapToObject = (map: typeof data) =>
-          Object.fromEntries(map.entries());
         const newData = mapToObject(data);
         localStorageSet("volumeData", newData);
       },
@@ -71,7 +75,6 @@ function useRead() {
 
   useEffect(() => {
     if (!isReading || !volumeData) return;
-    const objectToMap = (obj: typeof data) => new Map(Object.entries(obj));
     const newVolData = objectToMap(volumeData);
     for (const value of newVolData) {
       setVolume(value[1]);

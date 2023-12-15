@@ -1,6 +1,6 @@
 import { createActorContext } from "@xstate/react";
 import { assign, createMachine, fromObservable, fromPromise } from "xstate";
-import { dbToPercent, formatMilliseconds, log } from "@/utils";
+import { dbToPercent, formatMilliseconds, makeLogarithmic } from "@/utils";
 import { nelly } from "@/assets/nelly";
 import {
   start as initializeAudio,
@@ -211,7 +211,7 @@ export const playerMachine = createMachine(
       }),
       setVolume: assign(({ event }) => {
         if (event.type !== "setVolume") throw new Error();
-        const scaled = dbToPercent(log(event.volume));
+        const scaled = dbToPercent(makeLogarithmic(event.volume));
         Destination.volume.value = scaled;
         return {
           volume: event.volume,
