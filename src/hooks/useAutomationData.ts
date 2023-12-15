@@ -1,5 +1,5 @@
 import { PlayerContext } from "@/machines/playerMachine";
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useRef } from "react";
 import {
   localStorageGet,
   localStorageSet,
@@ -20,13 +20,13 @@ function useAutomationData() {
   return null;
 }
 
-const data = new Map<number, object>();
-
 // !!! --- WRITE --- !!! //
 function useWrite({ value }: Props) {
   const state = PlayerContext.useSelector((state) => state);
   const isWriting = state.matches({ ready: { automationMode: "writing" } });
   const t = state.context.t;
+
+  const data = useRef<Map<number, object>>(new Map());
 
   useEffect(() => {
     if (!isWriting) return;
@@ -34,8 +34,8 @@ function useWrite({ value }: Props) {
     const loop = t.scheduleRepeat(
       () => {
         const time: number = roundToFraction(t.seconds, 4);
-        data.set(time, { time, value });
-        const newData = mapToObject(data);
+        data.current.set(time, { time, value });
+        const newData = mapToObject(data.current);
         localStorageSet("volumeData", newData);
       },
       0.1,
@@ -47,7 +47,7 @@ function useWrite({ value }: Props) {
     };
   }, [isWriting, t, value]);
 
-  return data;
+  return data.current;
 }
 
 // !!! --- READ --- !!! //
